@@ -29,6 +29,7 @@ final class IdlInternalTokenizer extends DefaultTokenizer {
     private final IdlTokenizer tokenizer;
     private final Deque<CharSequence> docCommentLines = new ArrayDeque<>();
     private final Consumer<ValidationEvent> validationEventListener;
+    private final IdlWhitespaceParser whitespaceParser;
 
     IdlInternalTokenizer(String filename, CharSequence model) {
         this(filename, model, event -> { });
@@ -39,6 +40,7 @@ final class IdlInternalTokenizer extends DefaultTokenizer {
         this.model = model;
         this.validationEventListener = validationEventListener;
         this.tokenizer = IdlTokenizer.create(filename, model);
+        this.whitespaceParser = new IdlWhitespaceParser(this);
     }
 
     @Override
@@ -67,64 +69,28 @@ final class IdlInternalTokenizer extends DefaultTokenizer {
         return token;
     }
 
-    /**
-     * Skip spaces.
-     */
     void skipSpaces() {
-        while (getCurrentToken() == IdlToken.SPACE) {
-            next();
-        }
+        whitespaceParser.skipSpaces();
     }
 
-    /**
-     * Skip until the current token is not {@link IdlToken#SPACE}, {@link IdlToken#COMMA}, {@link IdlToken#COMMENT},
-     * or {@link IdlToken#NEWLINE}.
-     */
+    void skipOptionalComma() {
+        whitespaceParser.skipOptionalComma();
+    }
+
     void skipWs() {
-        while (getCurrentToken().isWhitespace()) {
-            next();
-        }
+        whitespaceParser.skipWs();
     }
 
-    /**
-     * Skip until the current token is not {@link IdlToken#SPACE}, {@link IdlToken#COMMA}, {@link IdlToken#COMMENT},
-     * or {@link IdlToken#NEWLINE}, or {@link IdlToken#DOC_COMMENT}.
-     */
     void skipWsAndDocs() {
-        IdlToken currentTokenType = getCurrentToken();
-        while (currentTokenType.isWhitespace() || currentTokenType == IdlToken.DOC_COMMENT) {
-            next();
-            currentTokenType = getCurrentToken();
-        }
+        whitespaceParser.skipWsAndDocs();
     }
 
-    /**
-     * Expect that one or more spaces are found at the current token, and skip over them.
-     *
-     * @throws ModelSyntaxException if the current token is not a space.
-     */
     void expectAndSkipSpaces() {
-        if (getCurrentToken() != IdlToken.SPACE) {
-            throw LoaderUtils.idlSyntaxError("Expected one or more spaces, but found "
-                                             + getCurrentToken().getDebug(getCurrentTokenLexeme()),
-                                             getCurrentTokenLocation());
-        }
-        skipSpaces();
+        whitespaceParser.expectAndSkipSpaces();
     }
 
-    /**
-     * Expect that one or more whitespace characters or documentation comments are found at the current token, and
-     * skip over them.
-     *
-     * @throws ModelSyntaxException if the current token is not whitespace.
-     */
     void expectAndSkipWhitespace() {
-        if (!getCurrentToken().isWhitespace()) {
-            throw LoaderUtils.idlSyntaxError("Expected one or more whitespace characters, but found "
-                                             + getCurrentToken().getDebug(getCurrentTokenLexeme()),
-                                             getCurrentTokenLocation());
-        }
-        skipWsAndDocs();
+        whitespaceParser.expectAndSkipWhitespace();
     }
 
     /**
@@ -142,27 +108,9 @@ final class IdlInternalTokenizer extends DefaultTokenizer {
      * @throws ModelSyntaxException if the current token is not a newline or followed by a newline.
      */
     void expectAndSkipBr() {
-        // Skip spaces and commas leading up to a required newline.
-        while (getCurrentToken().canSkipBeforeBr()) {
-            next();
-        }
-
-        // The following tokens are allowed tokens that contain newlines.
-        switch (getCurrentToken()) {
-            case NEWLINE:
-            case COMMENT:
-            case DOC_COMMENT:
-                clearDocCommentLinesForBr();
-                next();
-                skipWs();
-                break;
-            case EOF:
-                break;
-            default:
-                throw LoaderUtils.idlSyntaxError("Expected a line break, but found "
-                                                 + getCurrentToken().getDebug(getCurrentTokenLexeme()),
-                                                 getCurrentTokenLocation());
-        }
+        whitespaceParser.skipSpaces();
+        clearDocCommentLinesForBr();
+        whitespaceParser.expectAndSkipBr();
     }
 
     private void clearDocCommentLinesForBr() {

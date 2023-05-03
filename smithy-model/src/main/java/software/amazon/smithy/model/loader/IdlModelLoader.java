@@ -760,6 +760,8 @@ final class IdlModelLoader {
                 tokenizer.skipSpaces();
                 Node value = IdlNodeParser.expectAndSkipNode(this);
                 memberBuilder.addTrait(new EnumValueTrait.Provider().createTrait(memberBuilder.getId(), value));
+                tokenizer.skipSpaces();
+                tokenizer.skipOptionalComma();
                 tokenizer.expectAndSkipBr();
             } else {
                 tokenizer.skipWs();
@@ -916,6 +918,8 @@ final class IdlModelLoader {
             tokenizer.skipSpaces();
             Node node = IdlNodeParser.expectAndSkipNode(this);
             memberBuilder.addTrait(memberParsing.createAssignmentTrait(memberId, node));
+            tokenizer.skipSpaces();
+            tokenizer.skipOptionalComma();
             tokenizer.expectAndSkipBr();
         }
 

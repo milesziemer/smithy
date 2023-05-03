@@ -98,7 +98,8 @@ string support defined in :rfc:`7405`.
 .. rubric:: Whitespace
 
 .. productionlist:: smithy
-    WS   :1*(`SP` / `NL` / `Comment` / ",") ; whitespace
+    WS   :1*(`SP` / `NL` / `Comment` / `Comma`) ; whitespace
+    Comma:","
     SP   :1*(%x20 / %x09) ; one or more spaces or tabs
     NL   :%x0A / %x0D.0A ; Newline: \n and \r\n
     NotNL:%x09 / %x20-10FFFF ; Any character except newline
@@ -192,7 +193,7 @@ string support defined in :rfc:`7405`.
     EnumShapeStatement      :`EnumTypeName` `SP` `Identifier` [`Mixins`] [`WS`] `EnumShapeMembers`
     EnumTypeName            :%s"enum" / %s"intEnum"
     EnumShapeMembers        :"{" [`WS`] 1*(`TraitStatements` `Identifier` [`ValueAssignment`] [`WS`]) "}"
-    ValueAssignment         :[`SP`] "=" [`SP`] `NodeValue` `BR`
+    ValueAssignment         :[`SP`] "=" [`SP`] `NodeValue` [`SP`] [`Comma`] `BR`
     ListStatement           :%s"list" `SP` `Identifier` [`Mixins`] [`WS`] `ListMembers`
     ListMembers             :"{" [`WS`] [`ListMember`] [`WS`] "}"
     ListMember              :`TraitStatements` (`ElidedListMember` / `ExplicitListMember`)
