@@ -176,7 +176,7 @@ string support defined in :rfc:`7405`.
     ShapeOrApplyStatement   :`ShapeStatement` / `ApplyStatement`
     ShapeStatement          :`TraitStatements` `ShapeBody`
     ShapeBody               :`SimpleShapeStatement`
-                            :/ `EnumShapeStatement`
+                            :/ `EnumStatement`
                             :/ `ListStatement`
                             :/ `MapStatement`
                             :/ `StructureStatement`
@@ -189,8 +189,8 @@ string support defined in :rfc:`7405`.
                             :/ %s"byte" / %s"short" / %s"integer" / %s"long"
                             :/ %s"float" / %s"double" / %s"bigInteger"
                             :/ %s"bigDecimal" / %s"timestamp"
-    Mixins                  :[`SP`] %s"with" [`WS`] "[" 1*([`WS`] `ShapeId`) [`WS`] "]"
-    EnumShapeStatement      :`EnumTypeName` `SP` `Identifier` [`Mixins`] [`WS`] `EnumShapeMembers`
+    Mixins                  :[`SP`] %s"with" [`WS`] "[" [`WS`] 1*(`ShapeId` [`WS`]) "]"
+    EnumStatement           :`EnumTypeName` `SP` `Identifier` [`Mixins`] [`WS`] `EnumShapeMembers`
     EnumTypeName            :%s"enum" / %s"intEnum"
     EnumShapeMembers        :"{" [`WS`] 1*(`TraitStatements` `Identifier` [`ValueAssignment`] [`WS`]) "}"
     ValueAssignment         :[`SP`] "=" [`SP`] `NodeValue` [`SP`] [`Comma`] `BR`
@@ -785,7 +785,7 @@ The following example defines an ``integer`` shape with a :ref:`range-trait`:
 Enum shapes
 -----------
 
-The :ref:`enum` shape is defined using an :token:`smithy:EnumShapeStatement`.
+The :ref:`enum` shape is defined using an :token:`smithy:EnumStatement`.
 
 The following example defines an :ref:`enum` shape:
 
@@ -848,7 +848,7 @@ IntEnum shapes
 --------------
 
 The :ref:`intEnum` shape is defined using an
-:token:`smithy:EnumShapeStatement`.
+:token:`smithy:EnumStatement`.
 
 .. note::
     The :ref:`enumValue trait <enumValue-trait>` is required on all

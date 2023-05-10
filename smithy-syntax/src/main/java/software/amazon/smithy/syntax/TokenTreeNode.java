@@ -18,8 +18,9 @@ package software.amazon.smithy.syntax;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-final class TokenTreeNode implements TokenTree {
+class TokenTreeNode implements TokenTree {
 
     private final TreeType treeType;
     private final List<TokenTree> children = new ArrayList<>();
@@ -32,18 +33,18 @@ final class TokenTreeNode implements TokenTree {
     }
 
     @Override
-    public TokenTree getParent() {
+    public final TokenTree getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(TokenTree parent) {
+    public final void setParent(TokenTree parent) {
         this.parent = parent;
         clearCaches();
     }
 
     @Override
-    public void clearCaches() {
+    public final void clearCaches() {
         tokenCache = null;
         if (parent != null) {
             parent.clearCaches();
@@ -51,12 +52,12 @@ final class TokenTreeNode implements TokenTree {
     }
 
     @Override
-    public TreeType getType() {
+    public final TreeType getType() {
         return treeType;
     }
 
     @Override
-    public List<CapturedToken> getTokens() {
+    public final List<CapturedToken> getTokens() {
         List<CapturedToken> captures = tokenCache;
         if (captures == null) {
             captures = new ArrayList<>();
@@ -69,18 +70,30 @@ final class TokenTreeNode implements TokenTree {
     }
 
     @Override
-    public List<TokenTree> getChildren() {
+    public final List<TokenTree> getChildren() {
         return children;
     }
 
     @Override
-    public void appendChild(TokenTree tree) {
+    public final void appendChild(TokenTree tree) {
         children.add(tree);
         tree.setParent(this);
     }
 
     @Override
-    public String toString() {
+    public boolean removeChild(TokenTree tree) {
+        clearCaches();
+        return children.removeIf(c -> {
+            if (c == tree) {
+                c.setParent(null);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    @Override
+    public final String toString() {
         StringBuilder result = new StringBuilder();
         result.append(getType())
                 .append(" (").append(getStartLine()).append(", ").append(getStartColumn())
@@ -88,6 +101,9 @@ final class TokenTreeNode implements TokenTree {
                 .append(getEndLine()).append(", ").append(getEndColumn())
                 .append(") {")
                 .append('\n');
+        if (getError() != null) {
+            result.append("    ").append(getError()).append("\n    ---\n");
+        }
         for (TokenTree child : children) {
             result.append("    ").append(child.toString().replace("\n", "\n    ")).append('\n');
         }
@@ -96,32 +112,50 @@ final class TokenTreeNode implements TokenTree {
     }
 
     @Override
-    public int getStartPosition() {
+    public final int getStartPosition() {
         return children.isEmpty() ? 0 : children.get(0).getStartPosition();
     }
 
     @Override
-    public int getStartLine() {
+    public final int getStartLine() {
         return children.isEmpty() ? 0 : children.get(0).getStartLine();
     }
 
     @Override
-    public int getStartColumn() {
+    public final int getStartColumn() {
         return children.isEmpty() ? 0 : children.get(0).getStartColumn();
     }
 
     @Override
-    public int getEndLine() {
+    public final int getEndLine() {
         return children.isEmpty() ? getStartLine() : getLastToken().getEndLine();
     }
 
     @Override
-    public int getEndColumn() {
+    public final int getEndColumn() {
         return children.isEmpty() ? getStartColumn() : getLastToken().getEndColumn();
     }
 
     private CapturedToken getLastToken() {
         List<CapturedToken> capturedTokens = getTokens();
         return capturedTokens.get(capturedTokens.size() - 1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TokenTreeNode node = (TokenTreeNode) o;
+        return treeType == node.treeType
+               && getChildren().equals(node.getChildren())
+               && Objects.equals(getParent(), node.getParent());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(treeType, getChildren(), getParent());
     }
 }

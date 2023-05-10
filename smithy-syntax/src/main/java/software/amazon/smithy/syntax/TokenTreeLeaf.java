@@ -17,6 +17,7 @@ package software.amazon.smithy.syntax;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 final class TokenTreeLeaf implements TokenTree {
 
@@ -66,9 +67,14 @@ final class TokenTreeLeaf implements TokenTree {
     }
 
     @Override
+    public boolean removeChild(TokenTree tree) {
+        return false;
+    }
+
+    @Override
     public String toString() {
         if (token.getErrorMessage() != null) {
-            return token.getToken() + "('" + token.getLexeme() + "'; Error: " + token.getErrorMessage() + ')';
+            return token.getToken() + "(" + token.getErrorMessage() + ')';
         } else {
             return token.getToken().getDebug(token.getLexeme());
         }
@@ -97,5 +103,21 @@ final class TokenTreeLeaf implements TokenTree {
     @Override
     public int getEndColumn() {
         return token.getEndColumn();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TokenTreeLeaf that = (TokenTreeLeaf) o;
+        return token.equals(that.token) && Objects.equals(getParent(), that.getParent());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token, getParent());
     }
 }

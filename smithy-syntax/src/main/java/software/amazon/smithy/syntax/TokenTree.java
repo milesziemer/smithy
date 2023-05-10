@@ -36,7 +36,7 @@ public interface TokenTree {
      * @return Returns the created tree.
      */
     static TokenTree of(IdlTokenizer tokenizer) {
-        return new TokenTreeBuilder(tokenizer).create();
+        return new IdlParser(tokenizer).parse();
     }
 
     /**
@@ -156,6 +156,22 @@ public interface TokenTree {
     }
 
     /**
+     * Get the last immediate child contained in the tree of a specific type.
+     *
+     * @param type Type to return.
+     * @return Returns the last found child of the given type, or null if not found.
+     */
+    default TokenTree getLastChild(TreeType type) {
+        TokenTree result = null;
+        for (TokenTree tree : getChildren()) {
+            if (tree.getType() == type) {
+                result = tree;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Get a list of all immediate children contained in the tree of a specific type.
      *
      * @param type Type to return.
@@ -205,11 +221,28 @@ public interface TokenTree {
     }
 
     /**
+     * Remove a token tree.
+     *
+     * @param tree Tree to remove.
+     * @return Return true if this tree was found and removed.
+     */
+    boolean removeChild(TokenTree tree);
+
+    /**
      * Gets a flat list of all captured tokens contained within the tree.
      *
      * @return Returns the contained tokens.
      */
     List<CapturedToken> getTokens();
+
+    /**
+     * Gets the error associated with the tree, or null if not present.
+     *
+     * @return Returns the nullable error message.
+     */
+    default String getError() {
+        return null;
+    }
 
     /**
      * Get the absolute start position, starting at 0.

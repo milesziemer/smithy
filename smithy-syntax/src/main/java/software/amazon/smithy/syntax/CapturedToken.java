@@ -33,6 +33,7 @@ public final class CapturedToken {
     private final CharSequence lexeme;
     private final String stringContents;
     private final String errorMessage;
+    private final Number numberValue;
 
     private CapturedToken(
             IdlToken token,
@@ -43,6 +44,7 @@ public final class CapturedToken {
             int endColumn,
             CharSequence lexeme,
             String stringContents,
+            Number numberValue,
             String errorMessage
     ) {
         this.token = token;
@@ -53,6 +55,7 @@ public final class CapturedToken {
         this.endColumn = endColumn;
         this.lexeme = lexeme;
         this.stringContents = stringContents;
+        this.numberValue = numberValue;
         this.errorMessage = errorMessage;
     }
 
@@ -68,6 +71,7 @@ public final class CapturedToken {
                                 ? tokenizer.getCurrentTokenStringSlice().toString()
                                 : null;
         String errorMessage = token == IdlToken.ERROR ? tokenizer.getCurrentTokenError() : null;
+        Number numberValue = token == IdlToken.NUMBER ? tokenizer.getCurrentTokenNumberValue() : null;
         return new CapturedToken(token,
                                  tokenizer.getCurrentTokenStart(),
                                  tokenizer.getCurrentTokenLine(),
@@ -76,6 +80,7 @@ public final class CapturedToken {
                                  tokenizer.getColumn(),
                                  tokenizer.getCurrentTokenLexeme(),
                                  stringContents,
+                                 numberValue,
                                  errorMessage);
     }
 
@@ -87,6 +92,7 @@ public final class CapturedToken {
                                  tokenizer.getLine(),
                                  tokenizer.getColumn(),
                                  tokenizer.getCurrentTokenLexeme(),
+                                 null,
                                  null,
                                  errorMessage);
     }
@@ -133,5 +139,9 @@ public final class CapturedToken {
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public Number getNumberValue() {
+        return numberValue;
     }
 }
