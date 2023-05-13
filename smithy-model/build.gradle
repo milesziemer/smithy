@@ -28,6 +28,14 @@ dependencies {
     jmh project(":smithy-utils")
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDirs += ["${project(':smithy-idl-tests').projectDir}/cases"]
+        }
+    }
+}
+
 jmh {
     timeUnit = "us"
 }

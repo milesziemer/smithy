@@ -45,7 +45,7 @@ public class ValidSmithyModelLoaderRunnerTest {
     @BeforeAll
     public static void before() {
         shared = Model.assembler()
-                .addImport(ValidSmithyModelLoaderRunnerTest.class.getResource("valid/__shared.json"))
+                .addImport(ValidSmithyModelLoaderRunnerTest.class.getResource("/valid/__shared.json"))
                 .assemble()
                 .unwrap();
     }
@@ -100,7 +100,7 @@ public class ValidSmithyModelLoaderRunnerTest {
     public static Collection<String> data() throws Exception {
         try {
             Stream<Path> paths = Files.walk(Paths.get(
-                    ValidSmithyModelLoaderRunnerTest.class.getResource("valid").toURI()));
+                    ValidSmithyModelLoaderRunnerTest.class.getResource("/valid").toURI()));
             return paths
                     .filter(Files::isRegularFile)
                     .filter(file -> file.toString().endsWith(".json"))
