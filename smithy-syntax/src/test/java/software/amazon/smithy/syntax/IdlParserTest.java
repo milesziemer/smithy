@@ -241,4 +241,33 @@ public class IdlParserTest {
 
         System.out.println(tree);
     }
+
+    @Test
+    public void parsesEnum() {
+        String model = "$version: \"2.0\"\n\n"
+                       + "namespace hello.there\n\n"
+                       + "enum Foo {\n"
+                       + "  hello = \"HELLO\",\n"
+                       + "  there\n"
+                       + "}\n";
+        IdlTokenizer tokenizer = IdlTokenizer.create("example.smithy", model);
+        TokenTree tree = TokenTree.of(tokenizer);
+
+        System.out.println(tree);
+    }
+
+    @Test
+    public void parsesIntEnum() {
+        String model = "$version: \"2.0\"\n\n"
+                       + "namespace hello.there\n\n"
+                       + "intEnum Foo {\n"
+                       + "  hello = 1\n\n"
+                       + "  @enumValue(2)\n"
+                       + "  there"
+                       + "}\n";
+        IdlTokenizer tokenizer = IdlTokenizer.create("example.smithy", model);
+        TokenTree tree = TokenTree.of(tokenizer);
+
+        System.out.println(tree);
+    }
 }

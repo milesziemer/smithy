@@ -117,11 +117,11 @@ final class ShapeStatementsParser implements Parser {
                             parseOperation();
                             break;
                         case ENUM:
-                            // TODO
-                            throw new UnsupportedOperationException();
+                            parseEnumShape(TreeType.ENUM_STATEMENT);
+                            break;
                         case INT_ENUM:
-                            // TODO
-                            throw new UnsupportedOperationException();
+                            parseEnumShape(TreeType.INT_ENUM_STATEMENT);
+                            break;
                         default:
                             if (type.getCategory() == ShapeType.Category.SIMPLE) {
                                 parseSimpleShapeStatement();
@@ -524,6 +524,29 @@ final class ShapeStatementsParser implements Parser {
             parseShapeTypeAndName();
             openNonStructure();
             // TODO
+            closeBracedShape();
+        });
+    }
+
+    private void parseEnumShape(TreeType type) {
+        tokenizer.withState(type, () -> {
+            parseShapeTypeAndName();
+            openNonStructure();
+
+            while (tokenizer.hasNext() && tokenizer.getCurrentToken() != IdlToken.RBRACE) {
+                tokenizer.withState(TreeType.SHAPE_MEMBER, () -> {
+                    tokenizer.movePreviousDocCommentsHere();
+                    parseTraits();
+                    tokenizer.expect(IdlToken.IDENTIFIER);
+                    tokenizer.withState(TreeType.SHAPE_MEMBER_NAME, tokenizer::next);
+                    if (tokenizer.peekPastSpaces(0).getToken() == IdlToken.EQUAL) {
+                        parseShapeMemberValueAssignment();
+                    } else {
+                        tokenizer.skipWs();
+                    }
+                });
+            }
+
             closeBracedShape();
         });
     }
