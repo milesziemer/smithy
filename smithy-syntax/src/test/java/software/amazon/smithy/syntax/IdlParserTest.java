@@ -2,11 +2,17 @@ package software.amazon.smithy.syntax;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToObject;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 import software.amazon.smithy.model.loader.IdlToken;
 import software.amazon.smithy.model.loader.IdlTokenizer;
+import software.amazon.smithy.model.node.Node;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class IdlParserTest {
     @Test
@@ -50,16 +56,25 @@ public class IdlParserTest {
 
     @Test
     public void parsesTraits() {
-        String model = "$version: \"2.0\"\n\n"
-                       + "namespace hello.there\n\n"
-                       + "/// Foo\n"
-                       + "@foo({a: true})\n"
-                       + "@length(min: 1, max: 10)\n"
-                       + "string Foo\n";
-        IdlTokenizer tokenizer = IdlTokenizer.create("example.smithy", model);
+        String modelFilename = "valid/basic-traits.smithy";
+        String expectedJsonFilename = modelFilename.replace(".smithy", ".json");
+        String model;
+        String expectedJson;
+        try {
+            Path modelFile = Paths.get(getClass().getResource(modelFilename).toURI());
+            Path expectedJsonFile = Paths.get(getClass().getResource(expectedJsonFilename).toURI());
+            model = new String(Files.readAllBytes(modelFile));
+            expectedJson = new String(Files.readAllBytes(expectedJsonFile));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read file " + modelFilename, e);
+        }
+        IdlTokenizer tokenizer = IdlTokenizer.create("filename", model);
         TokenTree tree = TokenTree.of(tokenizer);
+        Node actual = tree.toNode();
 
-        System.out.println(tree);
+        Node expected = Node.parse(expectedJson);
+
+        assertThat(Node.prettyPrintJson(actual), equalTo(Node.prettyPrintJson(expected)));
     }
 
     @Test

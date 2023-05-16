@@ -15,6 +15,9 @@
 
 package software.amazon.smithy.syntax;
 
+import software.amazon.smithy.model.node.Node;
+import software.amazon.smithy.model.node.ObjectNode;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -119,5 +122,10 @@ final class TokenTreeLeaf implements TokenTree {
     @Override
     public int hashCode() {
         return Objects.hash(token, getParent());
+    }
+
+    @Override
+    public Node toNode() {
+        return Node.from(this.token.getLexeme().toString());
     }
 }

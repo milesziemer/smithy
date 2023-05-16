@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import software.amazon.smithy.model.loader.IdlTokenizer;
 import software.amazon.smithy.model.loader.ModelSyntaxException;
+import software.amazon.smithy.model.node.ToNode;
 
 /**
  * Provides a labeled tree of tokens returned from {@link IdlTokenizer}.
@@ -27,7 +28,7 @@ import software.amazon.smithy.model.loader.ModelSyntaxException;
  * <p>This abstraction is a kind of parse tree based on lexer tokens. Each consumed token is present in the tree,
  * and grouped together into nodes with labels defined by {@link TreeType}.
  */
-public interface TokenTree {
+public interface TokenTree extends ToNode {
 
     /**
      * Create a TokenTree from a {@link IdlTokenizer}.

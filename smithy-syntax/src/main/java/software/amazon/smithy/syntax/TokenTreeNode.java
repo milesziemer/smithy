@@ -15,6 +15,11 @@
 
 package software.amazon.smithy.syntax;
 
+import software.amazon.smithy.model.node.ArrayNode;
+import software.amazon.smithy.model.node.Node;
+import software.amazon.smithy.model.node.ObjectNode;
+import software.amazon.smithy.model.node.ToNode;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -157,5 +162,15 @@ class TokenTreeNode implements TokenTree {
     @Override
     public int hashCode() {
         return Objects.hash(treeType, getChildren(), getParent());
+    }
+
+    @Override
+    public Node toNode() {
+        ObjectNode.Builder nodeBuilder = Node.objectNodeBuilder();
+        ArrayNode.Builder childrenNodesBuilder = ArrayNode.builder();
+        for (TokenTree child: this.children) {
+            childrenNodesBuilder.withValue(child.toNode());
+        }
+        return nodeBuilder.withMember(this.treeType.name().toLowerCase(), childrenNodesBuilder.build()).build();
     }
 }

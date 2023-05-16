@@ -1,0 +1,572 @@
+{
+  "idl": [
+    {
+      "control_section": [
+        {
+          "control_statement": [
+            "$",
+            {
+              "node_object_key": [
+                "version"
+              ]
+            },
+            ":",
+            {
+              "sp": [
+                " "
+              ]
+            },
+            {
+              "node_value": [
+                "\"2.0\""
+              ]
+            },
+            {
+              "br": [
+                "\n",
+                "\n"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "metadata_section": []
+    },
+    {
+      "shape_section": [
+        {
+          "namespace_statement": [
+            {
+              "keyword": [
+                "namespace"
+              ]
+            },
+            {
+              "sp": [
+                " "
+              ]
+            },
+            {
+              "namespace": [
+                "com",
+                ".",
+                "test"
+              ]
+            },
+            {
+              "br": [
+                "\n",
+                "\n"
+              ]
+            }
+          ]
+        },
+        {
+          "use_section": []
+        },
+        {
+          "shape_statements": [
+            {
+              "shape_or_apply_statement": [
+                {
+                  "shape_statement": [
+                    {
+                      "trait_statements": [
+                        {
+                          "trait": [
+                            "@",
+                            {
+                              "shape_id": [
+                                "mixin"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "ws": [
+                            "\n"
+                          ]
+                        }
+
+                      ]
+                    },
+                    {
+                      "shape_body": [
+                        {
+                          "simple_shape_statement": [
+                            {
+                              "keyword": [
+                                "string"
+                              ]
+                            },
+                            {
+                              "sp": [
+                                " "
+                              ]
+                            },
+                            "SingleTrait"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "br": [
+                "\n",
+                "\n"
+              ]
+            },
+            {
+              "shape_or_apply_statement": [
+                {
+                  "shape_statement": [
+                    {
+                      "ws": [
+                        "/// Foo\n"
+                      ]
+                    },
+                    {
+                      "shape_body": [
+                        {
+                          "simple_shape_statement": [
+                            {
+                              "keyword": [
+                                "string"
+                              ]
+                            },
+                            {
+                              "sp": [
+                                " "
+                              ]
+                            },
+                            "DocCommentSyntaxSugar"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "br": [
+                "\n",
+                "\n"
+              ]
+            },
+            {
+              "shape_or_apply_statement": [
+                {
+                  "shape_statement": [
+                    {
+                      "trait_statements": [
+                        {
+                          "trait": [
+                            "@",
+                            {
+                              "shape_id": [
+                                "length"
+                              ]
+                            },
+                            {
+                              "trait_body": [
+                                "(",
+                                {
+                                  "trait_body_value": [
+                                    {
+                                      "trait_structure": [
+                                        {
+                                          "trait_structure_kvp": [
+                                            {
+                                              "node_object_key": [
+                                                "min"
+                                              ]
+                                            },
+                                            ":",
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            {
+                                              "node_value": [
+                                                "1"
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "ws": [
+                                            ",",
+                                            " "
+                                          ]
+                                        },
+                                        {
+                                          "trait_structure_kvp": [
+                                            {
+                                              "node_object_key": [
+                                                "max"
+                                              ]
+                                            },
+                                            ":",
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            {
+                                              "node_value": [
+                                                "20"
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                ")"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "ws": [
+                            "\n"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "shape_body": [
+                        {
+                          "simple_shape_statement": [
+                            {
+                              "keyword": [
+                                "string"
+                              ]
+                            },
+                            {
+                              "sp": [
+                                " "
+                              ]
+                            },
+                            "TraitWithMembers"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "br": [
+                "\n",
+                "\n"
+              ]
+            },
+            {
+              "shape_or_apply_statement": [
+                {
+                  "shape_statement": [
+                    {
+                      "trait_statements": [
+                        {
+                          "trait": [
+                            "@",
+                            {
+                              "shape_id": [
+                                "foo"
+                              ]
+                            },
+                            {
+                              "trait_body": [
+                                "(",
+                                {
+                                  "trait_body_value": [
+                                    {
+                                      "node_value": [
+                                        {
+                                          "node_object": [
+                                            "{",
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            {
+                                              "node_object_kvp": [
+                                                {
+                                                  "node_object_key": [
+                                                    "a"
+                                                  ]
+                                                },
+                                                ":",
+                                                {
+                                                  "ws": [
+                                                    " "
+                                                  ]
+                                                },
+                                                {
+                                                  "node_value": [
+                                                    {
+                                                      "keyword": [
+                                                        "true"
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            "}"
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                ")"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "ws": [
+                            "\n"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "shape_body": [
+                        {
+                          "simple_shape_statement": [
+                            {
+                              "keyword": [
+                                "string"
+                              ]
+                            },
+                            {
+                              "sp": [
+                                " "
+                              ]
+                            },
+                            "TraitWithObjectMember"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "shape_or_apply_statement": [
+                {
+                  "shape_statement": [
+                    {
+                      "ws": [
+                        "/// Foo\n"
+                      ]
+                    },
+                    {
+                      "trait_statements": [
+                        {
+                          "trait": [
+                            "@",
+                            {
+                              "shape_id": [
+                                "foo"
+                              ]
+                            },
+                            {
+                              "trait_body": [
+                                "(",
+                                {
+                                  "trait_body_value": [
+                                    {
+                                      "node_value": [
+                                        {
+                                          "node_object": [
+                                            "{",
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            {
+                                              "node_object_kvp": [
+                                                {
+                                                  "node_object_key": [
+                                                    "a"
+                                                  ]
+                                                },
+                                                ":",
+                                                {
+                                                  "ws": [
+                                                    " "
+                                                  ]
+                                                },
+                                                {
+                                                  "node_value": [
+                                                    {
+                                                      "keyword": [
+                                                        "true"
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            "}"
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                ")"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "ws": [
+                            "\n"
+                          ]
+                        },
+                        {
+                          "trait": [
+                            "@",
+                            {
+                              "shape_id": [
+                                "mixin"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "ws": [
+                            "\n"
+                          ]
+                        },
+                        {
+                          "trait": [
+                            "@",
+                            {
+                              "shape_id": [
+                                "length"
+                              ]
+                            },
+                            {
+                              "trait_body": [
+                                "(",
+                                {
+                                  "trait_body_value": [
+                                    {
+                                      "trait_structure": [
+                                        {
+                                          "trait_structure_kvp": [
+                                            {
+                                              "node_object_key": [
+                                                "min"
+                                              ]
+                                            },
+                                            ":",
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            {
+                                              "node_value": [
+                                                "1"
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "ws": [
+                                            ",",
+                                            " "
+                                          ]
+                                        },
+                                        {
+                                          "trait_structure_kvp": [
+                                            {
+                                              "node_object_key": [
+                                                "max"
+                                              ]
+                                            },
+                                            ":",
+                                            {
+                                              "ws": [
+                                                " "
+                                              ]
+                                            },
+                                            {
+                                              "node_value": [
+                                                "20"
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                ")"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "ws": [
+                            "\n"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "shape_body": [
+                        {
+                          "simple_shape_statement": [
+                            {
+                              "simple_shape_name": "string"
+                            },
+                            {
+                              "sp": [
+                                " "
+                              ]
+                            },
+                            "TraitWithObjectMember"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
