@@ -52,7 +52,6 @@ import software.amazon.smithy.model.traits.DocumentationTrait;
 import software.amazon.smithy.model.traits.EnumValueTrait;
 import software.amazon.smithy.model.traits.InputTrait;
 import software.amazon.smithy.model.traits.OutputTrait;
-import software.amazon.smithy.model.traits.Trait;
 import software.amazon.smithy.model.traits.UnitTypeTrait;
 import software.amazon.smithy.model.validation.Severity;
 import software.amazon.smithy.model.validation.ValidationEvent;
@@ -576,10 +575,10 @@ final class IdlModelLoader {
                 parseEnumShape(id, location, IntEnumShape.builder());
                 break;
             case STRUCTURE:
-                parseStructuredShape(id, location, StructureShape.builder(), MemberParsing.PARSING_STRUCTURE_MEMBER);
+                parseStructuredShape(id, location, StructureShape.builder());
                 break;
             case UNION:
-                parseStructuredShape(id, location, UnionShape.builder(), MemberParsing.PARSING_MEMBER);
+                parseStructuredShape(id, location, UnionShape.builder());
                 break;
             case SERVICE:
                 parseServiceStatement(id, location);
@@ -784,8 +783,7 @@ final class IdlModelLoader {
     private void parseStructuredShape(
             ShapeId id,
             SourceLocation location,
-            AbstractShapeBuilder<?, ?> builder,
-            MemberParsing memberParsing
+            AbstractShapeBuilder<?, ?> builder
     ) {
         LoadOperation.DefineShape operation = createShape(builder.id(id).source(location));
 
@@ -797,40 +795,11 @@ final class IdlModelLoader {
 
         // Parse optional "with" statements to add mixins, but only if it's supported by the version.
         parseMixins(operation);
-        parseMembers(operation, memberParsing);
+        parseMembers(operation);
         operations.accept(operation);
     }
 
-    private enum MemberParsing {
-        PARSING_STRUCTURE_MEMBER {
-            @Override
-            boolean supportsAssignment() {
-                return true;
-            }
-
-            @Override
-            Trait createAssignmentTrait(ShapeId id, Node value) {
-                return new DefaultTrait(value);
-            }
-        },
-        PARSING_MEMBER {
-            @Override
-            boolean supportsAssignment() {
-                return false;
-            }
-
-            @Override
-            Trait createAssignmentTrait(ShapeId id, Node value) {
-                throw new UnsupportedOperationException();
-            }
-        };
-
-        abstract boolean supportsAssignment();
-
-        abstract Trait createAssignmentTrait(ShapeId id, Node value);
-    }
-
-    private void parseMembers(LoadOperation.DefineShape op, MemberParsing memberParsing) {
+    private void parseMembers(LoadOperation.DefineShape op) {
         Set<String> definedMembers = new HashSet<>();
 
         tokenizer.skipWsAndDocs();
@@ -839,7 +808,7 @@ final class IdlModelLoader {
         tokenizer.skipWs();
 
         while (tokenizer.hasNext() && tokenizer.getCurrentToken() != IdlToken.RBRACE) {
-            parseMember(op, definedMembers, memberParsing);
+            parseMember(op, definedMembers);
             tokenizer.skipWs();
         }
 
@@ -847,7 +816,7 @@ final class IdlModelLoader {
         tokenizer.next();
     }
 
-    private void parseMember(LoadOperation.DefineShape operation, Set<String> defined, MemberParsing memberParsing) {
+    private void parseMember(LoadOperation.DefineShape operation, Set<String> defined) {
         ShapeId parent = operation.toShapeId();
 
         // Parse optional member traits.
@@ -901,7 +870,7 @@ final class IdlModelLoader {
         // Skip spaces to check if there is default trait sugar.
         tokenizer.skipSpaces();
 
-        if (memberParsing.supportsAssignment() && tokenizer.getCurrentToken() == IdlToken.EQUAL) {
+        if (tokenizer.getCurrentToken() == IdlToken.EQUAL) {
             if (!modelVersion.isDefaultSupported()) {
                 throw syntax("@default assignment is only supported in IDL version 2 or later");
             }
@@ -909,7 +878,7 @@ final class IdlModelLoader {
             tokenizer.next();
             tokenizer.skipSpaces();
             Node node = IdlNodeParser.expectAndSkipNode(tokenizer, resolver);
-            memberBuilder.addTrait(memberParsing.createAssignmentTrait(memberId, node));
+            memberBuilder.addTrait(new DefaultTrait(node));
             tokenizer.expectAndSkipBr();
         }
 
@@ -1104,7 +1073,7 @@ final class IdlModelLoader {
         LoadOperation.DefineShape operation = createShape(builder);
         parseMixins(operation);
         parseForResource(operation);
-        parseMembers(operation, MemberParsing.PARSING_STRUCTURE_MEMBER);
+        parseMembers(operation);
         addTraits(id, traits);
         operations.accept(operation);
         return id;
