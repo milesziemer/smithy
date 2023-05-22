@@ -234,7 +234,7 @@ final class AstModelLoader {
             ObjectNode node,
             CollectionShape.Builder<?, ?> builder
     ) {
-        LoaderUtils.checkForAdditionalProperties(node, id, COLLECTION_PROPERTY_NAMES).ifPresent(this::emit);
+//        LoaderUtils.checkForAdditionalProperties(node, id, COLLECTION_PROPERTY_NAMES).ifPresent(this::emit);
         applyShapeTraits(id, node);
         // Add the container before members to ensure sets are rejected before adding unreferenced members.
         builder.id(id).source(node.getSourceLocation());

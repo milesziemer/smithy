@@ -668,58 +668,8 @@ final class IdlModelLoader {
     private void parseCollection(ShapeId id, SourceLocation location, CollectionShape.Builder<?, ?> builder) {
         LoadOperation.DefineShape operation = createShape(builder.id(id).source(location));
         parseMixins(operation);
-        tokenizer.skipWsAndDocs();
-        tokenizer.expect(IdlToken.LBRACE);
-        tokenizer.next();
-        tokenizer.skipWs();
-        parsePossiblyElidedMember(operation, "member");
-        tokenizer.skipWsAndDocs();
-        tokenizer.expect(IdlToken.RBRACE);
-        tokenizer.next();
+        parseMembers(operation);
         operations.accept(operation);
-    }
-
-    // Parsed list, set, and map members.
-    private void parsePossiblyElidedMember(LoadOperation.DefineShape operation, String memberName) {
-        boolean isElided = false;
-        List<IdlTraitParser.Result> memberTraits = IdlTraitParser.parseDocsAndTraitsBeforeShape(tokenizer, resolver);
-        SourceLocation location = tokenizer.getCurrentTokenLocation();
-
-        if (tokenizer.getCurrentToken() == IdlToken.DOLLAR) {
-            isElided = true;
-            if (!modelVersion.supportsTargetElision()) {
-                throw syntax(operation.toShapeId().withMember(memberName),
-                             "Members can only elide targets in IDL version 2 or later");
-            }
-            tokenizer.next();
-            tokenizer.expect(IdlToken.IDENTIFIER);
-        } else {
-            if (!tokenizer.doesCurrentIdentifierStartWith(memberName.charAt(0))) {
-                if (!memberTraits.isEmpty()) {
-                    throw syntax("Expected member definition to follow traits");
-                }
-                return;
-            }
-        }
-
-        MemberShape.Builder memberBuilder = MemberShape.builder()
-                .id(operation.toShapeId().withMember(memberName))
-                .source(location);
-
-        tokenizer.expectCurrentLexeme(memberName);
-        tokenizer.next();
-
-        if (!isElided) {
-            tokenizer.skipWsAndDocs();
-            tokenizer.expect(IdlToken.COLON);
-            tokenizer.next();
-            tokenizer.skipWsAndDocs();
-            String id = tokenizer.internString(IdlShapeIdParser.expectAndSkipShapeId(tokenizer));
-            addForwardReference(id, memberBuilder::target);
-        }
-
-        operation.addMember(memberBuilder);
-        addTraits(memberBuilder.getId(), memberTraits);
     }
 
     private void parseEnumShape(ShapeId id, SourceLocation location, AbstractShapeBuilder<?, ?> builder) {
@@ -767,16 +717,7 @@ final class IdlModelLoader {
     private void parseMapStatement(ShapeId id, SourceLocation location) {
         LoadOperation.DefineShape operation = createShape(MapShape.builder().id(id).source(location));
         parseMixins(operation);
-        tokenizer.skipWsAndDocs();
-        tokenizer.expect(IdlToken.LBRACE);
-        tokenizer.next();
-        tokenizer.skipWs();
-        parsePossiblyElidedMember(operation, "key");
-        tokenizer.skipWs();
-        parsePossiblyElidedMember(operation, "value");
-        tokenizer.skipWsAndDocs();
-        tokenizer.expect(IdlToken.RBRACE);
-        tokenizer.next();
+        parseMembers(operation);
         operations.accept(operation);
     }
 
