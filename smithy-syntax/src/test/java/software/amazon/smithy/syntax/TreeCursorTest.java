@@ -111,4 +111,28 @@ public class TreeCursorTest {
         assertThat(cursor.getLastChild(TreeType.WS).getTree(), sameInstance(child1));
         assertThat(cursor.getLastChild(TreeType.APPLY_STATEMENT), nullValue());
     }
+
+    @Test
+    public void findChildAtPath() {
+        TokenTree tree = createTree("simple-model.smithy");
+        TreeCursor cursor = tree.zipper();
+        // Tries to find the namespace
+        TreeCursor namespace = cursor.findChildAtPath(
+                TreeType.SHAPE_SECTION,
+                TreeType.NAMESPACE_STATEMENT,
+                TreeType.NAMESPACE);
+
+        assertThat(namespace, notNullValue());
+        assertThat(namespace.getTree().getType(), is(TreeType.NAMESPACE));
+        assertThat(namespace.getTree().concatTokens(), equalTo("smithy.example"));
+
+        // Tries to find the first "use"d shape id
+        TreeCursor nothing = cursor.findChildAtPath(
+                TreeType.SHAPE_SECTION,
+                TreeType.USE_SECTION,
+                TreeType.USE_STATEMENT,
+                TreeType.ABSOLUTE_ROOT_SHAPE_ID);
+
+        assertThat(nothing, nullValue());
+    }
 }

@@ -318,6 +318,39 @@ public final class TreeCursor implements FromSourceLocation {
         }
     }
 
+    /**
+     * Finds the first child where the trees along the path from the current tree match the given tree types exactly.
+     * The last tree type in the path is the type of the target tree.
+     *
+     * @param path The types, in order, that represent the path to the child to get.
+     * @return Returns the child at the end of the given path, or null if one is not found.
+     */
+    public TreeCursor findChildAtPath(TreeType... path) {
+        return findChildAtPath(this, 0, path);
+    }
+
+    private static TreeCursor findChildAtPath(TreeCursor current, int pathIndex, TreeType... path) {
+        if (pathIndex >= path.length) {
+            return null;
+        }
+
+        boolean isLastIndex = pathIndex == path.length - 1;
+        TreeType expectedType = path[pathIndex];
+        // Check all children with the matching type
+        for (TreeCursor child : current.getChildrenByType(expectedType)) {
+            if (isLastIndex) {
+                return child;
+            }
+
+            TreeCursor found = findChildAtPath(child, pathIndex + 1, path);
+            if (found != null) {
+                return found;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
